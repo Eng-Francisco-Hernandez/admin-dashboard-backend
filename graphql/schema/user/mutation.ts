@@ -1,16 +1,30 @@
-import { GraphQLString } from "graphql";
+import { GraphQLError, GraphQLString, GraphQLNonNull } from "graphql";
+import * as bcrypt from "bcrypt";
+import { User } from "../../../models";
+import { Role } from "../../../data/enums";
 
 export const UserMutation = {
   createUser: {
     type: GraphQLString,
     description: "Create user",
     args: {
-      email: { type: GraphQLString },
-      password: { type: GraphQLString },
+      email: { type: new GraphQLNonNull(GraphQLString) },
+      role: { type: new GraphQLNonNull(GraphQLString) },
+      password: { type: new GraphQLNonNull(GraphQLString) },
     },
     async resolve(parent: any, args: any) {
-      console.log(args);
-      return "";
+      const hashedPassword = await bcrypt.hash(args.password, 10);
+      let newUser = new User({
+        email: args.email,
+        password: hashedPassword,
+        role: Role[args.role as keyof typeof Role],
+      });
+      try {
+        newUser = await newUser.save();
+        return newUser._id;
+      } catch (error) {
+        throw new GraphQLError(`Error when creating user: ${error}`);
+      }
     },
   },
 };

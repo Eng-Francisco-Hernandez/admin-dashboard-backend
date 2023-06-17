@@ -4,6 +4,7 @@ import cors from "cors";
 
 import dotenv from "dotenv";
 import { schema } from "./graphql/schema";
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -13,8 +14,10 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 
+mongoose.connect(process.env.DATABASE_URL!);
+
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello");
+  res.status(200).json({ status: "active" });
 });
 
 app.use(
@@ -26,5 +29,5 @@ app.use(
 );
 
 app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+  console.log(`⚡️[server]: Server is running at ${process.env.SERVER_BASE_URL}:${PORT}`);
 });
