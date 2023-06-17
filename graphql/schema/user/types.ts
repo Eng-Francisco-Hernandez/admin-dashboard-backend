@@ -5,7 +5,6 @@ export const UserType = new GraphQLObjectType({
   description: "User type representation",
   fields: () => ({
     id: { type: GraphQLString },
-    userName: { type: GraphQLString },
     email: { type: GraphQLString },
   }),
 });

@@ -5,10 +5,12 @@ export const UserMutation = {
     type: GraphQLString,
     description: "Create user",
     args: {
-      userId: { type: GraphQLString },
+      email: { type: GraphQLString },
+      password: { type: GraphQLString },
     },
     async resolve(parent: any, args: any) {
-      return "user._id";
+      console.log(args);
+      return "";
     },
   },
 };
