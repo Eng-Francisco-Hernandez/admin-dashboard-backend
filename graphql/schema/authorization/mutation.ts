@@ -1,7 +1,11 @@
 import { GraphQLError, GraphQLString, GraphQLNonNull } from "graphql";
 import * as bcrypt from "bcrypt";
 import { RefreshToken, User } from "../../../models";
-import { generateAccessToken, generateRefreshToken } from "../../../lib";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "../../../lib";
 import AuthorizationType from "./types";
 
 export const AuthorizationMutation = {
@@ -44,21 +48,18 @@ export const AuthorizationMutation = {
   logout: {
     type: GraphQLString,
     description: "Logout",
-    args: {
-      userId: { type: new GraphQLNonNull(GraphQLString) },
-    },
-    async resolve(parent: any, args: any) {
+    async resolve(parent: any, args: any, context: any) {
       try {
-        await RefreshToken.deleteOne({ userId: args.userId });
+        await RefreshToken.deleteOne({ userId: context.user._id });
       } catch (error) {
         throw new GraphQLError(`Error when loggin out user: ${error}`);
       }
-      return args.userId;
+      return context.user._id;
     },
   },
   refreshToken: {
     type: GraphQLString,
-    description: 'Refresh token',
+    description: "Refresh token",
     args: {
       token: { type: new GraphQLNonNull(GraphQLString) },
     },
@@ -66,8 +67,13 @@ export const AuthorizationMutation = {
       const refreshToken = await RefreshToken.findOne({
         refreshToken: args.token,
       });
-      if (refreshToken === null) throw new GraphQLError('Unauthorized');
-      return '';
+      if (refreshToken === null) throw new GraphQLError("Unauthorized");
+      try {
+        const newAccessToken = verifyRefreshToken(refreshToken.refreshToken!);
+        return newAccessToken;
+      } catch (error) {
+        throw new GraphQLError("Forbidden");
+      }
     },
   },
 };

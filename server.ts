@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { schema } from "./graphql/schema";
 import mongoose from "mongoose";
+import { authorizationMiddleware, getUser } from "./lib";
 
 dotenv.config();
 
@@ -20,14 +21,23 @@ app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ status: "active" });
 });
 
+app.use(authorizationMiddleware)
+
 app.use(
   "/graphql",
-  graphqlHTTP({
-    schema: schema,
-    graphiql: true,
+  graphqlHTTP(async (req: any, res: any, graphQLParams: any) => {
+    return {
+      schema: schema,
+      context: {
+        user: await getUser(req.headers['authorization']),
+      },
+      graphiql: true,
+    };
   })
 );
 
 app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at ${process.env.SERVER_BASE_URL}:${PORT}`);
+  console.log(
+    `⚡️[server]: Server is running at ${process.env.SERVER_BASE_URL}:${PORT}`
+  );
 });
