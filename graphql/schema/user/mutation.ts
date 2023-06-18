@@ -4,7 +4,7 @@ import { User } from "../../../models";
 import { Role } from "../../../data/enums";
 
 export const UserMutation = {
-  createUser: {
+  register: {
     type: GraphQLString,
     description: "Create user",
     args: {

@@ -1,3 +1,4 @@
+import { AuthorizationMutation } from "./authorization";
 import { UserMutation, UserQuery } from "./user";
 
 export const RootQuery = {
@@ -6,4 +7,5 @@ export const RootQuery = {
 
 export const RootMutation = {
   ...UserMutation,
+  ...AuthorizationMutation,
 };
