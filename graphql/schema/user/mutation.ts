@@ -1,7 +1,7 @@
 import { GraphQLError, GraphQLString, GraphQLNonNull } from "graphql";
 import * as bcrypt from "bcrypt";
 import { User } from "../../../models";
-import { Role } from "../../../data/enums";
+import { Role } from "../../../data";
 
 export const UserMutation = {
   register: {

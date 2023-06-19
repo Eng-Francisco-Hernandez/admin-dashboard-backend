@@ -1,3 +1,4 @@
+import { publicRoutes } from "../data";
 import { User } from "../models";
 
 const jwt = require("jsonwebtoken");
@@ -25,7 +26,7 @@ export function verifyRefreshToken(refreshToken: string) {
 }
 
 export const authorizationMiddleware = (req: any, res: any, next: any) => {
-  if (["login", "refreshToken"].indexOf(req.body.operationName) > -1) {
+  if (publicRoutes.indexOf(req.body.operationName) > -1) {
     next();
   } else {
     const authHeader = req.headers["authorization"];
@@ -48,8 +49,12 @@ export const authorizationMiddleware = (req: any, res: any, next: any) => {
 
 export async function getUser(authHeader: string) {
   if (!authHeader) return undefined;
-  const token = authHeader && authHeader.split(" ")[1];
-  const decodedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-  const user = await User.findOne({ email: decodedUser.email });
-  return user;
+  try {
+    const token = authHeader && authHeader.split(" ")[1];
+    const decodedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const user = await User.findOne({ email: decodedUser.email });
+    return user;
+  } catch (error) {
+    return undefined;
+  }
 }
