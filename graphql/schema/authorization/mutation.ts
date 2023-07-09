@@ -51,10 +51,10 @@ export const AuthorizationMutation = {
     async resolve(parent: any, args: any, context: any) {
       try {
         await RefreshToken.deleteOne({ userId: context.user._id });
+        return context.user._id;
       } catch (error) {
         throw new GraphQLError(`Error when loggin out user: ${error}`);
       }
-      return context.user._id;
     },
   },
   refreshToken: {
