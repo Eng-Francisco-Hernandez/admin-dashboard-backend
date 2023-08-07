@@ -1,13 +1,15 @@
 import { AuthorizationMutation } from "./authorization";
-import { DataQuery } from "./data";
+import { GraphQuery } from "./graph";
+import { GraphMutation } from "./graph/mutation";
 import { UserMutation, UserQuery } from "./user";
 
 export const RootQuery = {
   ...UserQuery,
-  ...DataQuery
+  ...GraphQuery,
 };
 
 export const RootMutation = {
   ...UserMutation,
   ...AuthorizationMutation,
+  ...GraphMutation,
 };

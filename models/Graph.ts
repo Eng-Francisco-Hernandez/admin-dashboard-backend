@@ -2,13 +2,15 @@ import * as mongoose from "mongoose";
 
 const graphSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       trim: true,
     },
-    points: {
-      type: [Number],
-    },
+    points: [
+      {
+        data: Number,
+      },
+    ],
   },
   { timestamps: true }
 );
