@@ -17,6 +17,7 @@ export const PointType = new GraphQLObjectType({
 export const GraphType = new GraphQLObjectType({
   name: "GraphType",
   fields: () => ({
+    _id: { type: new GraphQLNonNull(GraphQLString) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     points: { type: new GraphQLList(PointType) },
   }),

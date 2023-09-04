@@ -19,4 +19,20 @@ export const GraphMutation = {
       }
     },
   },
+  editGraph: {
+    type: GraphQLString,
+    description: "Create graph",
+    args: {
+      graph: { type: new GraphQLNonNull(GraphInputType) },
+      id: { type: new GraphQLNonNull(GraphQLString) },
+    },
+    async resolve(parent: any, args: any) {
+      try {
+        await Graph.updateOne({ _id: args.id }, args.graph);
+        return args.id;
+      } catch (error) {
+        throw new GraphQLError(`Error when creating graph: ${error}`);
+      }
+    },
+  },
 };
