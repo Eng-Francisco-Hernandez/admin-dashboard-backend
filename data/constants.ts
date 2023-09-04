@@ -1,1 +1,1 @@
-export const publicRoutes = ["login", "refreshToken"];
+export const publicRoutes = ["register", "login", "refreshToken"];
